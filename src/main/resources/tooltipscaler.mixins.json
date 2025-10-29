@@ -1,0 +1,14 @@
+{
+  "minVersion": "0.8",
+  "required": true,
+  "refmap": "tooltipscaler.refmap.json",
+  "package": "com.altimor.tooltipscaler.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "GuiGraphicsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

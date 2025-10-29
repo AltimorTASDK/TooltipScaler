@@ -1,0 +1,1 @@
+A Minecraft 1.20.1 Forge mod that rescales large tooltips so they don't go off screen.
