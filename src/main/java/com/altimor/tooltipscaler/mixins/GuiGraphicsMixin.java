@@ -21,7 +21,8 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.util.Mth;
 
-@Mixin(value = GuiGraphics.class)
+// We want to apply our popPose mixin after anything that renders from the tail of renderTooltipInternal
+@Mixin(value = GuiGraphics.class, priority = Integer.MAX_VALUE)
 public abstract class GuiGraphicsMixin {
     @Shadow
     private Minecraft minecraft;
@@ -55,6 +56,9 @@ public abstract class GuiGraphicsMixin {
             }
         }
 
+        var guiGraphics = (GuiGraphics)(Object)this;
+        guiGraphics.pose().scale(scale, scale, 1f);
+
         return Math.round(tooltipWidth * scale);
     }
 
@@ -82,11 +86,9 @@ public abstract class GuiGraphicsMixin {
         return new Vector2i(x, y);
     }
 
-    @Inject(
-        method = "renderTooltipInternal",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawManaged(Ljava/lang/Runnable;)V"))
-    private void applyScale(Font font, List<ClientTooltipComponent> tooltip, int x, int y, ClientTooltipPositioner positioner, CallbackInfo ci) {
+    @Inject(method = "renderTooltipInternal", at = @At("TAIL"))
+    private void popPose(Font font, List<ClientTooltipComponent> tooltip, int x, int y, ClientTooltipPositioner positioner, CallbackInfo ci) {
         var guiGraphics = (GuiGraphics)(Object)this;
-        guiGraphics.pose().scale(scale, scale, 1f);
+        guiGraphics.pose().popPose();
     }
 }
